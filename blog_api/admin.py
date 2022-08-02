@@ -12,7 +12,7 @@ class ProfileInline(admin.StackedInline):
 class UserAdmin(admin.ModelAdmin):
     """ Меняем представление User в админке """
     model = User
-    fields = ['username']   # Todo Дополнить другими полями, хотя бы имя и фамилия
+    fields = ['username', 'first_name', 'last_name', 'email']
     inlines = [ProfileInline]
 
 
