@@ -16,3 +16,18 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = (
             'user', 'follows'
         )
+
+
+class UserSignUpSerializer(serializers.ModelSerializer):
+    """ Сериализация данных для регистрации пользователя """
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'first_name', 'last_name', 'email']
+        write_only_fields = ('password',)
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        # Хэшируем пароль
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
