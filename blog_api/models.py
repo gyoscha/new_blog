@@ -45,3 +45,6 @@ class Note(models.Model):
             f"({self.create_at:%Y-%m-%d %H:%M}): "
             f"{self.title[:20]}..."
         )
+
+    class Meta:
+        get_latest_by = 'create_at'

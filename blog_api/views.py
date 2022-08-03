@@ -26,7 +26,7 @@ class CreateUserView(CreateAPIView):
 class NoteAPIView(ListCreateAPIView):
     """ Создание и просмотр постов """
     permission_classes = [IsAuthenticated]
-    queryset = Note.objects.all()
+    queryset = Note.objects.all().order_by('-create_at')
     serializer_class = serializers.NoteSerializer
 
     def perform_create(self, serializer):
