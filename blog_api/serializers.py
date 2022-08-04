@@ -38,18 +38,21 @@ class AccountSerializer(serializers.ModelSerializer):
             )
 
     follow_count = serializers.SerializerMethodField()
-    # notes_count = serializers.SerializerMethodField()
+    notes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
         fields = [
             'user',
             'follow_count',
-            # 'notes_count',
+            'notes_count',
         ]
 
     def get_follow_count(self, obj):
         return obj.follows.count()
+
+    def get_notes_count(self, obj):
+        return obj.user.note.count()
 
 
 class AccountDetailSerializer(serializers.ModelSerializer):
@@ -73,7 +76,7 @@ class AccountDetailSerializer(serializers.ModelSerializer):
 
     follows = AccountUsernameSerializer(many=True, read_only=True)
     follow_count = serializers.SerializerMethodField()
-    # notes_count = serializers.SerializerMethodField()
+    notes_count = serializers.SerializerMethodField()
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
@@ -86,9 +89,8 @@ class AccountDetailSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'follow_count',
-            # 'notes_count',
+            'notes_count',
             'follows',
-            # 'note',
         ]
 
     def get_email(self, obj):
@@ -103,8 +105,8 @@ class AccountDetailSerializer(serializers.ModelSerializer):
     def get_follow_count(self, obj):
         return obj.follows.count()
 
-    # def get_notes_count(self, obj):
-    #     pass
+    def get_notes_count(self, obj):
+        return obj.user.note.count()
 
 
 class UserSignUpSerializer(serializers.ModelSerializer):
