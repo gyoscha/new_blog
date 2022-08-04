@@ -21,7 +21,7 @@ class AccountDetailAPIView(RetrieveAPIView):
     """ Представление для просмотра отдельного профиля """
     permission_classes = [IsAuthenticated]
     queryset = Profile.objects.all()
-    serializer_class = serializers.AccountSerializer
+    serializer_class = serializers.AccountDetailSerializer
 
 
 class CreateUserView(CreateAPIView):

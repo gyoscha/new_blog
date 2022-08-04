@@ -6,18 +6,6 @@ from rest_framework import serializers
 from blog_api.models import Profile, Note
 
 
-class AccountUsernameSerializer(serializers.ModelSerializer):
-    """ Сериализация данных для списка пользователей """
-    user = serializers.SlugRelatedField(
-        slug_field='username',
-        read_only=True
-    )
-
-    class Meta:
-        model = Profile
-        fields = ['user']
-
-
 class NoteSerializer(serializers.ModelSerializer):
     """ Сериализация данных для постов """
     user = serializers.SlugRelatedField(
@@ -45,6 +33,40 @@ class NoteSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     """ Сериализация данных для списка пользователей """
     user = serializers.SlugRelatedField(
+                slug_field='username',
+                read_only=True
+            )
+
+    follow_count = serializers.SerializerMethodField()
+    # notes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Profile
+        fields = [
+            'user',
+            'follow_count',
+            # 'notes_count',
+        ]
+
+    def get_follow_count(self, obj):
+        return obj.follows.count()
+
+
+class AccountDetailSerializer(serializers.ModelSerializer):
+    """ Сериализация данных для детального просмотра профиля """
+
+    class AccountUsernameSerializer(serializers.ModelSerializer):
+        """ Сериализация данных для списка пользователей """
+        user = serializers.SlugRelatedField(
+            slug_field='username',
+            read_only=True
+        )
+
+        class Meta:
+            model = Profile
+            fields = ['user']
+
+    user = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True
     )
@@ -52,15 +74,31 @@ class AccountSerializer(serializers.ModelSerializer):
     follows = AccountUsernameSerializer(many=True, read_only=True)
     follow_count = serializers.SerializerMethodField()
     # notes_count = serializers.SerializerMethodField()
+    first_name = serializers.SerializerMethodField()
+    last_name = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
         fields = [
-            'user', 'follow_count',
+            'user',
+            'first_name',
+            'last_name',
+            'email',
+            'follow_count',
             # 'notes_count',
             'follows',
             # 'note',
         ]
+
+    def get_email(self, obj):
+        return obj.user.email
+
+    def get_last_name(self, obj):
+        return obj.user.last_name
+
+    def get_first_name(self, obj):
+        return obj.user.first_name
 
     def get_follow_count(self, obj):
         return obj.follows.count()
