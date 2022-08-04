@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
-class OnlyAuthorEditNote(BasePermission):
+class OnlyAuthor(BasePermission):
     """ Только автор поста может его изменить """
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:

@@ -1,14 +1,24 @@
 from django.contrib.auth.models import User
 from rest_framework import permissions as rest_permissions
-from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
+    RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from . import serializers, permissions
 from blog_api.models import Profile, Note
 
+# Todo Изменить профили все с подсчетом постов и профиль только свой после успешного входа
+
 
 class AccountAPIView(ListAPIView):
     """ Представление для просмотра профилей """
+    permission_classes = [IsAuthenticated]
+    queryset = Profile.objects.all()
+    serializer_class = serializers.AccountSerializer
+
+
+class AccountDetailAPIView(RetrieveAPIView):
+    """ Представление для просмотра отдельного профиля """
     permission_classes = [IsAuthenticated]
     queryset = Profile.objects.all()
     serializer_class = serializers.AccountSerializer
@@ -35,6 +45,6 @@ class NoteAPIView(ListCreateAPIView):
 
 class NoteDetailAPIView(RetrieveUpdateDestroyAPIView):
     """ Редактирование и удаление поста """
-    permission_classes = [IsAuthenticated, permissions.OnlyAuthorEditNote]
+    permission_classes = [IsAuthenticated, permissions.OnlyAuthor]
     queryset = Note.objects.all()
     serializer_class = serializers.NoteSerializer
