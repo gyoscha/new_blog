@@ -11,6 +11,20 @@ from blog_api.models import Profile, Note
 # Todo Изменить профили все с подсчетом постов и профиль только свой после успешного входа
 
 
+class FeedAPIView(ListAPIView):
+    """ Представление для просмотра ленты постов из подписок """
+    permission_classes = [IsAuthenticated]
+    queryset = Note.objects.all()
+    serializer_class = serializers.NoteSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        follows = [i for i in user.profile.follows.all()]
+
+        return queryset.filter(user__username__in=follows).order_by('-create_at')
+
+
 class AccountAPIView(ListAPIView):
     """ Представление для просмотра профилей """
     permission_classes = [IsAuthenticated]
