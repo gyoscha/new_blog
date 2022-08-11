@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.contrib.auth.models import User
 from rest_framework import permissions as rest_permissions
 from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
@@ -13,7 +14,8 @@ from blog_api.models import Profile, Note
 class AccountAPIView(ListAPIView):
     """ Представление для просмотра профилей """
     permission_classes = [IsAuthenticated]
-    queryset = Profile.objects.all()
+    # сортировка по количеству постов в порядке убывания
+    queryset = Profile.objects.all().annotate(cnt=Count('user__note')).order_by('-cnt')
     serializer_class = serializers.AccountSerializer
 
 
