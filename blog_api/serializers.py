@@ -55,9 +55,8 @@ class AccountSerializer(serializers.ModelSerializer):
         return obj.user.note.count()
 
 
-class AccountDetailSerializer(serializers.ModelSerializer):
-    """ Сериализация данных для детального просмотра профиля """
-
+class AccountFollowsSerializer(serializers.ModelSerializer):
+    """ Сериализация данных для просмотра подписок """
     class AccountUsernameSerializer(serializers.ModelSerializer):
         """ Сериализация данных для списка пользователей """
         user = serializers.SlugRelatedField(
@@ -67,7 +66,7 @@ class AccountDetailSerializer(serializers.ModelSerializer):
 
         class Meta:
             model = Profile
-            fields = ['user']
+            fields = ['user', ]
 
     user = serializers.SlugRelatedField(
         slug_field='username',
@@ -75,6 +74,23 @@ class AccountDetailSerializer(serializers.ModelSerializer):
     )
 
     follows = AccountUsernameSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = [
+            'user',
+            'follows',
+        ]
+
+
+class AccountDetailSerializer(serializers.ModelSerializer):
+    """ Сериализация данных для детального просмотра профиля """
+
+    user = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True
+    )
+
     follow_count = serializers.SerializerMethodField()
     notes_count = serializers.SerializerMethodField()
     first_name = serializers.SerializerMethodField()

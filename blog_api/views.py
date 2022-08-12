@@ -2,7 +2,7 @@ from django.db.models import Count
 from django.contrib.auth.models import User
 from rest_framework import permissions as rest_permissions
 from rest_framework.generics import ListAPIView, CreateAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
-    RetrieveAPIView
+    RetrieveAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from . import serializers, permissions
@@ -33,11 +33,18 @@ class AccountAPIView(ListAPIView):
     serializer_class = serializers.AccountSerializer
 
 
-class AccountDetailAPIView(RetrieveAPIView):
+class AccountDetailAPIView(RetrieveUpdateAPIView):
     """ Представление для просмотра отдельного профиля """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, permissions.OnlyAuthor]
     queryset = Profile.objects.all()
     serializer_class = serializers.AccountDetailSerializer
+
+
+class AccountFollowsAPIView(RetrieveAPIView):
+    """ Представление для просмотра подписок пользователя """
+    permission_classes = [IsAuthenticated]
+    queryset = Profile.objects.all()
+    serializer_class = serializers.AccountFollowsSerializer
 
 
 class CreateUserView(CreateAPIView):
