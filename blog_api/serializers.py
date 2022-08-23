@@ -37,7 +37,7 @@ class NoteSerializer(serializers.ModelSerializer):
 
 
 class NoteDetailSerializer(serializers.ModelSerializer):
-    """ Сериализация данных для постов """
+    """ Сериализация данных для отдельного поста """
     class AccountUsernameSerializer(serializers.ModelSerializer):
         """ Сериализация данных для получения username """
         user = serializers.SlugRelatedField(

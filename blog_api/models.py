@@ -5,6 +5,7 @@ from django.dispatch import receiver
 
 
 class Profile(models.Model):
+    """ Модель для профиля пользователя """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     follows = models.ManyToManyField(
         "self",
@@ -28,7 +29,7 @@ def create_profile(instance, created, **kwargs):
 
 
 class Note(models.Model):
-    """ Модель для записей """
+    """ Модель для записей в блоге """
     user = models.ForeignKey(
         User, related_name='note', on_delete=models.DO_NOTHING
     )
