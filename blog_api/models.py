@@ -39,6 +39,12 @@ class Note(models.Model):
     note = models.TextField(verbose_name='Текст поста')
     create_at = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
 
+    read_posts = models.ManyToManyField(
+        Profile,
+        symmetrical=False,
+        blank=True
+    )
+
     def __str__(self):
         return (
             f"{self.user} "

@@ -13,11 +13,55 @@ class NoteSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    views = serializers.SerializerMethodField()
+
     class Meta:
         model = Note
         fields = (
             'id', 'title', 'note', 'create_at',
             'user',
+            'views',
+        )
+
+    def to_representation(self, instance):
+        """ Переопределение вывода. Меняем формат даты в ответе """
+        ret = super().to_representation(instance)
+        # Конвертируем строку в дату по формату
+        create_at = datetime.strptime(ret['create_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
+        # Конвертируем дату в строку в новом формате
+        ret['create_at'] = create_at.strftime('%d %B %Y - %H:%M:%S')
+        return ret
+
+    def get_views(self, obj):
+        return obj.read_posts.count()
+
+
+class NoteDetailSerializer(serializers.ModelSerializer):
+    """ Сериализация данных для постов """
+    class AccountUsernameSerializer(serializers.ModelSerializer):
+        """ Сериализация данных для получения username """
+        user = serializers.SlugRelatedField(
+            slug_field='username',
+            read_only=True
+        )
+
+        class Meta:
+            model = Profile
+            fields = ['user', ]
+
+    user = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True
+    )
+
+    read_posts = AccountUsernameSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Note
+        fields = (
+            'id', 'title', 'note', 'create_at',
+            'user',
+            'read_posts',
         )
 
     def to_representation(self, instance):
@@ -58,7 +102,7 @@ class AccountSerializer(serializers.ModelSerializer):
 class AccountFollowsSerializer(serializers.ModelSerializer):
     """ Сериализация данных для просмотра подписок """
     class AccountUsernameSerializer(serializers.ModelSerializer):
-        """ Сериализация данных для списка пользователей """
+        """ Сериализация данных для получения username """
         user = serializers.SlugRelatedField(
             slug_field='username',
             read_only=True
