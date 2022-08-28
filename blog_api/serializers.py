@@ -29,7 +29,8 @@ class NoteSerializer(serializers.ModelSerializer):
         # Конвертируем строку в дату по формату
         create_at = datetime.strptime(ret['create_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
         # Конвертируем дату в строку в новом формате
-        ret['create_at'] = create_at.strftime('%d %B %Y - %H:%M:%S')
+        ret['create_at'] = create_at.strftime('%d %B %Y - %H:%M')
+        # :%S
         return ret
 
     def get_views(self, obj):
@@ -70,7 +71,7 @@ class NoteDetailSerializer(serializers.ModelSerializer):
         # Конвертируем строку в дату по формату
         create_at = datetime.strptime(ret['create_at'], '%Y-%m-%dT%H:%M:%S.%fZ')
         # Конвертируем дату в строку в новом формате
-        ret['create_at'] = create_at.strftime('%d %B %Y - %H:%M:%S')
+        ret['create_at'] = create_at.strftime('%d %B %Y - %H:%M')
         return ret
 
 

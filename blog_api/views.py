@@ -31,26 +31,6 @@ class FeedAPIView(ListAPIView):
             # .exclude(read_posts=user.profile)   # можно исключить прочитанные посты из ленты, но тогда отваливаются фильтры
 
 
-class FeedDetailAPIView(RetrieveAPIView):
-    """ Представление для детального просмотра поста из ленты """
-    permission_classes = [IsAuthenticated]
-    queryset = Note.objects.all()
-    serializer_class = serializers.NoteSerializer
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-
-        return queryset \
-            .select_related('user')
-
-    def get_object(self):
-        """ При открытии поста он автоматически становится прочитанным пользователем """
-        obj = super().get_object()
-        user = self.request.user
-        obj.read_posts.add(user.profile)
-        return obj
-
-
 class AccountsAPIView(ListAPIView):
     """ Представление для просмотра профилей """
     permission_classes = [IsAuthenticated]
